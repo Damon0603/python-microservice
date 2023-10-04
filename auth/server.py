@@ -29,7 +29,7 @@ def login():
     )
     if res > 0:
         user_row = cur.fetchone()
-        emaiL = user_row[0]
+        email = user_row[0]
         password = user_row[1]
 
         if auth.username != email or auth.password != password:
@@ -42,5 +42,23 @@ def login():
         return "Invalid Credentials",401
 
 
+
+ 
+
+def createJWT(username,secret,authz):
+    return jwt.encode(
+        {
+        "username":username,
+        "exp":datetime.datetime.now(tz=datetime.timezone.utc)
+        + datetime.timedelta(days=1),
+        "iat": datetime.datetime.utcnow(),
+        "admin": authz,
+
+        },
+    secret,
+    algorithm = "HS256"
+    )
+
+
 if __name__== "__main__":
-    server.run()
+    server.run(host="0.0.0",port=5000)
