@@ -1,3 +1,4 @@
+from operator import methodcaller
 from flask import Flask,request 
 import jwt,datetime,os
 
@@ -42,8 +43,14 @@ def login():
         return "Invalid Credentials",401
 
 
+@server.route("/validate",method=["POST"])
+def validate():
+    encoded_jwt = request.header["Authorization"]
+    if not encoded_jwt: 
+        return "missing credentials",40
 
- 
+
+
 
 def createJWT(username,secret,authz):
     return jwt.encode(
