@@ -1,4 +1,5 @@
 from operator import methodcaller
+from tokenize import Token
 from flask import Flask,request 
 import jwt,datetime,os
 
@@ -47,8 +48,16 @@ def login():
 def validate():
     encoded_jwt = request.header["Authorization"]
     if not encoded_jwt: 
-        return "missing credentials",40
+        return "missing credentials",401
+    
+    encoded_jwt = encoded_jwt.split(" ")[1]
 
+    try:
+        decoded = jwt.decode(
+            encoded_jwt,os.environ.get("JWT_SECRET"), algorithms=["HS256"]
+        )
+    except:
+        return "not authorized",403
 
 
 
